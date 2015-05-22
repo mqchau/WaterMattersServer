@@ -21,7 +21,17 @@ var express = require('express'),
     namespace = require('express-namespace'),
     ibmbluemix = require('ibmbluemix'),
     ibmdata = require('ibmdata'),
-	bodyparser = require('body-parser');
+    path = require('path'),
+    crypto = require('crypto'),
+	bodyparser = require('body-parser'),
+	bucket = "watermatters";
+
+
+//the following var contains the aws key and secret to upload to S3 bucket
+//the actual key value won't be check in to git. But rather enter manually by hand from user if they want to run the app
+var awsInfo = require('./awsinfo');
+var awsKey = awsInfo.awsKey;
+var secret = awsInfo.secret;
 
 //extract application data from bluelist.json
 var fs = require('fs');
@@ -158,6 +168,30 @@ appContext.use('/public',express.static('public'));
 app.get('/', function(req, res){
 	res.redirect(contextRoot+"/public");
 });
+
+
+function sign(req, res, next) {
+
+    var fileName = req.body.fileName,
+        expiration = new Date(new Date().getTime() + 1000 * 60 * 5).toISOString(); // expire in 5 minutes
+
+    var policy =
+    { "expiration": expiration,
+        "conditions": [
+            {"bucket": bucket},
+            {"key": fileName},
+            {"acl": 'public-read'},
+            ["starts-with", "$Content-Type", ""],
+            ["content-length-range", 0, 524288000]
+        ]};
+
+    policyBase64 = new Buffer(JSON.stringify(policy), 'utf8').toString('base64');
+    signature = crypto.createHmac('sha1', secret).update(policyBase64).digest('base64');
+    res.json({bucket: bucket, awsKey: awsKey, policy: policyBase64, signature: signature});
+
+}
+
+appContext.use('/signing', sign);
 
 app.listen(ibmconfig.getPort());
 console.log('Server started at port: '+ibmconfig.getPort());

@@ -1,6 +1,6 @@
 {
-    "applicationId": "<INSERT_APPLICATION_ID_HERE>",
-    "applicationSecret": "<INSERT_APPLICATION_SECRET_HERE>",
-    "applicationRoute": "<INSERT_APPLICATION_ROUTE_HERE>"
+    "applicationId": "e9c573b4-c3aa-4552-84c2-403e4bff879e",
+    "applicationSecret": "8685e0b026b7e341a2ec80ebffae66679c3a1b55",
+    "applicationRoute": "http://watermattersserver.mybluemix.net"
 }
 

@@ -4,13 +4,18 @@
   "version" : "0.3.2",
   "author": "Matthew Perrins <matthew_perrins@uk.ibm.com>",
   "license": "Apache",
+    "scripts": {
+        "start": "node app.js"
+    },
   "dependencies": {
     "request": "~2.34.0",
+	"morgan": "*",
     "body-parser": "*",
     "express": "4.x",
     "express-namespace": "*",
     "ibmdata": "latest",
-    "ibmbluemix": "latest"
+    "ibmbluemix": "latest",
+	"crypto": "*"
   },
   "main": "app.js"
 }
