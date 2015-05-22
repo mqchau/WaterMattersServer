@@ -1,21 +1,20 @@
 {
-  "name": "bluelist-mobileweb",
+  "name": "WaterMattersServer",
   "description": "Bluelist Mobile Web Sample using Codename: Bluemix",
   "version" : "0.3.2",
-  "author": "Matthew Perrins <matthew_perrins@uk.ibm.com>",
+  "author": "Quan Chau <quanqchau@gmail.com>",
   "license": "Apache",
     "scripts": {
         "start": "node app.js"
     },
   "dependencies": {
-    "request": "~2.34.0",
+    "request": "*",
 	"morgan": "*",
     "body-parser": "*",
-    "express": "4.x",
+    "express": "*",
     "express-namespace": "*",
     "ibmdata": "latest",
-    "ibmbluemix": "latest",
-	"crypto": "*"
+    "ibmbluemix": "latest"
   },
   "main": "app.js"
 }

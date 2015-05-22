@@ -26,12 +26,9 @@ var express = require('express'),
 	bodyparser = require('body-parser'),
 	bucket = "watermatters";
 
-
-//the following var contains the aws key and secret to upload to S3 bucket
-//the actual key value won't be check in to git. But rather enter manually by hand from user if they want to run the app
-var awsInfo = require('./awsinfo');
-var awsKey = awsInfo.awsKey;
-var secret = awsInfo.secret;
+//apparently you have to add the aws key and aws secret here in plain text. But the security rules are against checking it in Git so I'll just ignore it here. Remember to put them in before deploying to IBM bluemix or we can't upload to S3
+var awsKey = "<put aws key>";
+var secret = "<put aws secret>";
 
 //extract application data from bluelist.json
 var fs = require('fs');
@@ -51,6 +48,8 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({
   extended: true
 }));
+
+
 
 //initialize ibmdata service sdks 
 app.use(function(req, res, next) {
@@ -169,6 +168,15 @@ app.get('/', function(req, res){
 	res.redirect(contextRoot+"/public");
 });
 
+function hmac(algorithm, key, text, encoding) {
+    var hmac = crypto.createHmac(algorithm, key);
+
+    hmac.setEncoding(encoding);
+    hmac.write(text);
+    hmac.end();
+
+    return hmac.read();
+};
 
 function sign(req, res, next) {
 
@@ -186,12 +194,16 @@ function sign(req, res, next) {
         ]};
 
     policyBase64 = new Buffer(JSON.stringify(policy), 'utf8').toString('base64');
-    signature = crypto.createHmac('sha1', secret).update(policyBase64).digest('base64');
+	signature = crypto.createHmac('sha1', secret).update(policyBase64).digest('base64');
     res.json({bucket: bucket, awsKey: awsKey, policy: policyBase64, signature: signature});
 
 }
 
 appContext.use('/signing', sign);
+
+appContext.use('/helloworld', function(req, res){
+	res.send("Hello World");
+});
 
 app.listen(ibmconfig.getPort());
 console.log('Server started at port: '+ibmconfig.getPort());
